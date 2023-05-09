@@ -1,38 +1,49 @@
+// Establish keys
 require('dotenv').config()
 
-const fetch = require('node-fetch')
-const express = require('express')
 const path = require('path')
+const fetch = require ('node-fetch')
+const express = require('express')
+const { fileURLToPath } = require('url')
+const prismic = require('@prismicio/client')
+const prismicH = require('@prismicio/helpers')
 const errorHandler = require('errorhandler')
+const UAParser = require('ua-parser-js')
 
 const app = express()
-const port = 3000
-
-const Prismic = require('@prismicio/client')
-const PrismicH = require('@prismicio/helpers')
-
-const { application } = require('express')
-const UAParser = require('ua-parser-js')
+const port = process.env.PORT || 3000 // When going live add in a port in .env but for now its an or
 
 app.use(errorHandler())
 app.use(express.static(path.join(__dirname, 'public')))
 
+// Set PUG as template engine
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views'))
+app.locals.basedir = app.get('views')
+
 // Initialize the prismic.io api
 const initApi = (req) => {
-  return Prismic.createClient(process.env.PRISMIC_ENDPOINT, {
+  return prismic.createClient(process.env.PRISMIC_ENDPOINT, {
     accessToken: process.env.PRISMIC_ACCESS_TOKEN,
     req,
     fetch
   })
 }
 
-// Link Resolver
+// Link Resolver (routing for pages to dir)
 const HandleLinkResolver = (doc) => {
+  // About page
+  if (doc.type === 'about') {
+    return '/about'
+  }
+
   // Default to homepage
   return '/'
 }
 
-// Middleware to inject prismic context
+// Add a middleware function that runs on every route. It will inject
+// the prismic context to the locals so that we can access these in
+// our templates.
 app.use((req, res, next) => {
   const ua = UAParser(req.headers['user-agent'])
 
@@ -41,7 +52,7 @@ app.use((req, res, next) => {
   res.locals.isTablet = ua.device.type === 'tablet'
 
   res.locals.Link = HandleLinkResolver
-  res.locals.PrismicH = PrismicH
+  res.locals.prismicH = prismicH
   res.locals.Numbers = (index) => {
     return index === 0
       ? 'One'
@@ -56,88 +67,51 @@ app.use((req, res, next) => {
   next()
 })
 
-app.set('view engine', 'pug')
-app.set('views', path.join(__dirname, 'views'))
-app.locals.basedir = app.get('views')
-
+// Api fetch to get each single page used
 const handleRequest = async (api) => {
-  const [meta, preloader, navigation, home, about, { results: collections }] =
+  const [meta, icons, home, about] =
     await Promise.all([
       api.getSingle('meta'),
-      api.getSingle('preloader'),
-      api.getSingle('navigation'),
+      api.getSingle('icons'),
       api.getSingle('home'),
-      api.getSingle('about'),
-      api.query(Prismic.Predicates.at('document.type', 'collection'), {
-        fetchLinks: 'product.image'
-      })
+      api.getSingle('about')
+      // api.query(Prismic.Predicates.at('document.type', 'collection'), {
+      //   fetchLinks: 'product.image'
+      // })
     ])
-
-  //   console.log(about, home, collections);
 
   const assets = []
 
-  home.data.gallery.forEach((item) => {
-    assets.push(item.image.url)
-  })
-
-  about.data.gallery.forEach((item) => {
-    assets.push(item.image.url)
-  })
-
-  about.data.body.forEach((section) => {
-    if (section.slice_type === 'gallery') {
-      section.items.forEach((item) => {
-        assets.push(item.image.url)
-      })
-    }
-  })
-
-  collections.forEach((collection) => {
-    collection.data.list.forEach((item) => {
-      assets.push(item.product.data.image.url)
-    })
-  })
+  // home.data.gallery.forEach((item) => {
+  //   assets.push(item.media.url)
+  // })
 
   console.log(assets)
 
   return {
     assets,
     meta,
+    icons,
     home,
-    collections,
-    about,
-    navigation,
-    preloader
+    about
   }
 }
 
+// Query for the root path
 app.get('/', async (req, res) => {
   const api = await initApi(req)
   const defaults = await handleRequest(api)
-
-  res.render('pages/home', {
-    ...defaults,
-  })
+  res.render('pages/home', { ...defaults })
 })
 
-app.get('/projects', async (req, res) => {
-  res.render('pages/projects')
-})
-
+// Query for the about path
 app.get('/about', async (req, res) => {
   const api = await initApi(req)
   const defaults = await handleRequest(api)
-
-  res.render('pages/about', {
-    ...defaults,
-  })
+  res.render('pages/about', { ...defaults })
 })
 
-app.get('/contact', async (req, res) => {
-  res.render('pages/contact')
-})
-
+// Listen to application port and log it
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })

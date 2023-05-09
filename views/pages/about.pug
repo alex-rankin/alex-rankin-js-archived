@@ -1,7 +1,13 @@
 extends ../layout.pug
 
 block variables
-	- var template = 'about'
+  - var template = 'about'
 
 block content
-	h1.about__title About
+  .about
+    .about__wrapper
+      h1.about__title= about.data.title
+      p.about__description= about.data.description
+
+    .about__images
+      img.about__gallery__media__image(src= about.data.media.url)

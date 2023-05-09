@@ -1,13 +1,10 @@
 nav.navigation
-	.navigation__wrapper
-		a.navigation__link(href="/")
-		| Alex Rankin 
+  .navigation__wrapper
+    a.navigation__link(href="/")
+      span.navigation__title Alex Rankin
+        //- svg.navigation__icon
 
-		svg.navigation__link__icon
-
-		ul.navigation__list
-			li.navigation__list_item
-				a.navigation__list__link(href="/") Home
-
-			li.navigation__list_item
-				a.navigation__list__link(href="/about") About
+    span.navigation__menu menu
+    .showMenu.hamburger
+      span
+      span

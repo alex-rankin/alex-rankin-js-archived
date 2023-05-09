@@ -1,0 +1,26 @@
+@import './base/reset'; // Reset styles
+
+@import './utils/variables'; // Theme Colors
+@import './utils/functions';
+@import './utils/mixins';
+@import './utils/vendors';
+@import './utils/responsive';
+@import './utils/widths';
+
+@import './shared/titles';
+@import './shared/descriptions';
+@import './shared/buttons';
+
+@import './components/preloader';
+@import './components/navigation';
+@import './components/menu';
+@import './components/footer';
+
+@import './base/fonts';
+@import './base/base';
+
+// Page styling
+@import './pages/home/home';
+@import './pages/home/project-scroller';
+@import './pages/about/about';
+

@@ -1,7 +1,21 @@
 extends ../layout.pug
 
 block variables
-	- var template = 'Home'
+  - var template = 'home'
 
 block content
-	h1.home__title Home
+  .home
+    .home__landing
+      .home__text
+        h1.home__title Innovative design,<br />flawless execution.
+        p.tagline Crafting digital experiences that leave a lasting impression.
+        span.button__wrapper
+          a.contact__button.s-button(href="#")=home.data.contact_button
+      .home__image
+
+    .home__projects
+      .featured__title Featured<br />Studies
+      //- Include main projects section
+      include ../partials/home-projects
+      span.button__wrapper
+        a.project__button.o-button(href="/about")=home.data.project_button

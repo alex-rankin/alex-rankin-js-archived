@@ -1,0 +1,66 @@
+.project__button {
+  @extend %outline-button;
+  margin: auto;
+}
+
+.projects__wrapper {
+	--wrapper-section-height: 100vh;
+	height: calc(var(--wrapper-section-height) * var(--items));
+}
+
+.projects__inner {
+	display: block;
+	min-height: 100vh;
+	width: 100%;
+  margin: 50px 0px;
+}
+
+.project__reveal__item {
+	align-content: center;
+	display: grid;
+	grid-auto-flow: column;
+	grid-gap: 2rem;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+.project__item-media {
+	display: block;
+	max-height: 80vh;
+	margin-top: 10vh;
+	overflow: hidden;
+	top: 0;
+	width: 100%;
+}
+
+.project-title__content {
+	align-content: center;
+	display: grid;
+	grid-column: 1 / span 1;
+	max-height: 100vh;
+	will-change: opacity, transform;
+  text-align: right;
+  margin: auto;
+  gap: 10px;
+
+  // Small Title
+  span:first-of-type {
+    font-size: 0.8em;
+  }
+
+  // Title
+  h3 {
+    @extend %title-200;
+    font-size: 1.25em;
+  }
+
+  // Small Tags
+  span:last-of-type {
+    font-size: 0.6em;
+    color: #ccc;
+  }
+}

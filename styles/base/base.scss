@@ -1,0 +1,13 @@
+body {
+  @extend %description-15;
+  background-color: $background;
+  color: $color-white;
+}
+
+h1 {
+  @extend %title-600;
+}
+
+h2 {
+  @extend %title-300;
+}

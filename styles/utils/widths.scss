@@ -1,0 +1,24 @@
+%hero__container {
+  padding: 0 180px;
+}
+
+@include media('>desktop') {
+  %hero__container {
+    padding: 0 270px;
+    // width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+  }
+}
+
+@include media('<tablet') {
+  %hero__container {
+    padding: 0 100px;
+  }
+}
+
+@include media('<phone') {
+  %hero__container {
+    padding: 0 30px;
+  }
+}
