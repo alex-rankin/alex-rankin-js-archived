@@ -7,4 +7,4 @@ I did not finish this build as I decided to rebuild in Next JS using app router 
 Prismic\
 Pug\
 Sass\
-Node JS\
+Node JS
